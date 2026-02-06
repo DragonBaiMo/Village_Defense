@@ -37,10 +37,12 @@ import java.util.List;
 public class GolemFriendKit extends LevelKit {
 
   public GolemFriendKit() {
-    setName(new MessageBuilder("KIT_CONTENT_GOLEM_FRIEND_NAME").asKey().build());
-    setKey("GolemFriend");
-    List<String> description = getPlugin().getLanguageManager().getLanguageListFromKey("KIT_CONTENT_GOLEM_FRIEND_DESCRIPTION");
-    setDescription(description);
+    super(
+        "GolemFriend",
+        new MessageBuilder("KIT_CONTENT_GOLEM_FRIEND_NAME").asKey().build(),
+        null,
+        new ItemStack(Material.IRON_INGOT)
+    );
     setLevel(getKitsConfig().getInt("Required-Level.GolemFriend"));
     getPlugin().getKitRegistry().registerKit(this);
   }
@@ -59,11 +61,6 @@ public class GolemFriendKit extends LevelKit {
     if(arena != null) {
       spawnGolem(player, arena);
     }
-  }
-
-  @Override
-  public Material getMaterial() {
-    return Material.IRON_INGOT;
   }
 
   @Override

@@ -36,10 +36,12 @@ import java.util.List;
 public class LightTankKit extends FreeKit {
 
   public LightTankKit() {
-    setName(new MessageBuilder("KIT_CONTENT_LIGHT_TANK_NAME").asKey().build());
-    setKey("LightTank");
-    List<String> description = getPlugin().getLanguageManager().getLanguageListFromKey("KIT_CONTENT_LIGHT_TANK_DESCRIPTION");
-    setDescription(description);
+    super(
+        "LightTank",
+        new MessageBuilder("KIT_CONTENT_LIGHT_TANK_NAME").asKey().build(),
+        null,
+        new ItemStack(Material.LEATHER_CHESTPLATE)
+    );
     getPlugin().getKitRegistry().registerKit(this);
   }
 
@@ -55,11 +57,6 @@ public class LightTankKit extends FreeKit {
     ArmorHelper.setArmor(player, ArmorHelper.ArmorType.IRON);
     VersionUtils.setMaxHealth(player, 26.0);
     player.setHealth(26.0);
-  }
-
-  @Override
-  public Material getMaterial() {
-    return Material.LEATHER_CHESTPLATE;
   }
 
   @Override

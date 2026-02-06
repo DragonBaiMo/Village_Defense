@@ -18,6 +18,7 @@
 
 package plugily.projects.villagedefense.kits.premium;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -28,6 +29,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import plugily.projects.minigamesbox.classic.arena.PluginArena;
 import plugily.projects.minigamesbox.classic.handlers.language.MessageBuilder;
@@ -40,6 +42,9 @@ import plugily.projects.minigamesbox.classic.utils.misc.complement.ComplementAcc
 import plugily.projects.minigamesbox.classic.utils.version.VersionUtils;
 import plugily.projects.minigamesbox.classic.utils.version.events.api.PlugilyPlayerInteractEvent;
 import plugily.projects.minigamesbox.classic.utils.version.xseries.XMaterial;
+import org.bukkit.plugin.Plugin;
+import plugily.projects.minigamesbox.api.user.IUser;
+import plugily.projects.villagedefense.Main;
 import plugily.projects.villagedefense.arena.Arena;
 
 import java.util.List;
@@ -50,17 +55,19 @@ import java.util.List;
 public class BlockerKit extends PremiumKit implements Listener {
 
   public BlockerKit() {
-    setName(new MessageBuilder("KIT_CONTENT_BLOCKER_NAME").asKey().build());
-    setKey("Blocker");
-    List<String> description = getPlugin().getLanguageManager().getLanguageListFromKey("KIT_CONTENT_BLOCKER_DESCRIPTION");
-    setDescription(description);
-    getPlugin().getServer().getPluginManager().registerEvents(this, getPlugin());
+    super(
+        "Blocker",
+        new MessageBuilder("KIT_CONTENT_BLOCKER_NAME").asKey().build(),
+        null,
+        new ItemStack(Material.BARRIER)
+    );
     getPlugin().getKitRegistry().registerKit(this);
+    Bukkit.getPluginManager().registerEvents(this, (Plugin) getPlugin());
   }
 
   @Override
   public boolean isUnlockedByPlayer(Player player) {
-    return getPlugin().getPermissionsManager().hasPermissionString("KIT_PREMIUM_UNLOCK", player) || player.hasPermission("villagedefense.kit.blocker");
+    return ((Main) getPlugin()).getPermissionsManager().hasPermissionString("KIT_PREMIUM_UNLOCK", player) || player.hasPermission("villagedefense.kit.blocker");
   }
 
   @Override
@@ -74,11 +81,6 @@ public class BlockerKit extends PremiumKit implements Listener {
         .build());
     player.getInventory().addItem(new ItemStack(Material.SADDLE));
 
-  }
-
-  @Override
-  public Material getMaterial() {
-    return Material.BARRIER;
   }
 
   @Override
@@ -109,7 +111,8 @@ public class BlockerKit extends PremiumKit implements Listener {
       return;
     }
     Block block = null;
-    for(Block blocks : player.getLastTwoTargetBlocks(null, 5)) {
+    // 1.8.8 signature expects HashSet<Byte>
+    for(Block blocks : player.getLastTwoTargetBlocks((java.util.HashSet<Byte>) null, 5)) {
       if(blocks.getType() == Material.AIR) {
         block = blocks;
       }
@@ -118,7 +121,7 @@ public class BlockerKit extends PremiumKit implements Listener {
       new MessageBuilder("KIT_CONTENT_BLOCKER_PLACE_FAIL").asKey().player(player).sendPlayer();
       return;
     }
-    getPlugin().getBukkitHelper().takeOneItem(player, stack);
+    ((Main) getPlugin()).getBukkitHelper().takeOneItem(player, stack);
     event.setCancelled(false);
 
     new MessageBuilder("KIT_CONTENT_BLOCKER_PLACE_SUCCESS").asKey().player(player).sendPlayer();
@@ -142,7 +145,7 @@ public class BlockerKit extends PremiumKit implements Listener {
           cancel();
         }
       }
-    }.runTaskTimer(getPlugin(), 20, 20);
+    }.runTaskTimer((Plugin) getPlugin(), 20, 20);
   }
 
   private static class ZombieBarrier {

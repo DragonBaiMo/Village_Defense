@@ -39,11 +39,13 @@ import java.util.List;
 public class RunnerKit extends LevelKit {
 
   public RunnerKit() {
+    super(
+        "Runner",
+        new MessageBuilder("KIT_CONTENT_RUNNER_NAME").asKey().build(),
+        null,
+        new ItemStack(XMaterial.FIREWORK_ROCKET.parseMaterial())
+    );
     setLevel(getKitsConfig().getInt("Required-Level.Runner"));
-    setName(new MessageBuilder("KIT_CONTENT_RUNNER_NAME").asKey().build());
-    setKey("Runner");
-    List<String> description = getPlugin().getLanguageManager().getLanguageListFromKey("KIT_CONTENT_RUNNER_DESCRIPTION");
-    setDescription(description);
     getPlugin().getKitRegistry().registerKit(this);
   }
 
@@ -60,11 +62,6 @@ public class RunnerKit extends LevelKit {
     player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 2));
     player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, 1));
     player.getInventory().addItem(new ItemStack(XMaterial.COOKED_PORKCHOP.parseMaterial(), 8));
-  }
-
-  @Override
-  public Material getMaterial() {
-    return XMaterial.FIREWORK_ROCKET.parseMaterial();
   }
 
   @Override

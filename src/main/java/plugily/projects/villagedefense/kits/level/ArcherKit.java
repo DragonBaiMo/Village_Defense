@@ -36,11 +36,13 @@ import java.util.List;
 public class ArcherKit extends LevelKit {
 
   public ArcherKit() {
+    super(
+        "Archer",
+        new MessageBuilder("KIT_CONTENT_ARCHER_NAME").asKey().build(),
+        null,
+        new ItemStack(Material.BOW)
+    );
     setLevel(getKitsConfig().getInt("Required-Level.Archer"));
-    setName(new MessageBuilder("KIT_CONTENT_ARCHER_NAME").asKey().build());
-    setKey("Archer");
-    List<String> description = getPlugin().getLanguageManager().getLanguageListFromKey("KIT_CONTENT_ARCHER_DESCRIPTION");
-    setDescription(description);
     getPlugin().getKitRegistry().registerKit(this);
   }
 
@@ -56,11 +58,6 @@ public class ArcherKit extends LevelKit {
     player.getInventory().addItem(WeaponHelper.getEnchantedBow(Enchantment.DURABILITY, 10));
     player.getInventory().addItem(new ItemStack(Material.ARROW, 64));
     player.getInventory().addItem(new ItemStack(Material.COOKED_BEEF, 10));
-  }
-
-  @Override
-  public Material getMaterial() {
-    return Material.BOW;
   }
 
   @Override

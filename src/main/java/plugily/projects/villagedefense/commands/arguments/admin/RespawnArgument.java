@@ -26,7 +26,7 @@ import plugily.projects.minigamesbox.classic.commands.arguments.data.CommandArgu
 import plugily.projects.minigamesbox.classic.commands.arguments.data.LabelData;
 import plugily.projects.minigamesbox.classic.commands.arguments.data.LabeledCommandArgument;
 import plugily.projects.minigamesbox.classic.handlers.language.MessageBuilder;
-import plugily.projects.minigamesbox.classic.user.User;
+import plugily.projects.minigamesbox.api.user.IUser;
 import plugily.projects.minigamesbox.classic.utils.version.VersionUtils;
 import plugily.projects.villagedefense.arena.Arena;
 import plugily.projects.villagedefense.arena.ArenaUtils;
@@ -72,7 +72,7 @@ public class RespawnArgument {
         } else {
           target = player;
         }
-        User user = registry.getPlugin().getUserManager().getUser(target);
+        IUser user = registry.getPlugin().getUserManager().getUser(target);
         if(!user.isSpectator()) {
           return;
         }

@@ -18,6 +18,7 @@
 
 package plugily.projects.villagedefense.kits.premium;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -28,12 +29,15 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionType;
 import plugily.projects.minigamesbox.classic.handlers.language.MessageBuilder;
 import plugily.projects.minigamesbox.classic.kits.basekits.PremiumKit;
 import plugily.projects.minigamesbox.classic.utils.version.VersionUtils;
 import plugily.projects.minigamesbox.classic.utils.version.events.api.PlugilyPlayerInteractEvent;
+import plugily.projects.minigamesbox.api.user.IUser;
 import plugily.projects.minigamesbox.classic.utils.version.xseries.XMaterial;
+import plugily.projects.villagedefense.Main;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,12 +51,14 @@ public class NakedKit extends PremiumKit implements Listener {
   private final List<Material> armorTypes = new ArrayList<>();
 
   public NakedKit() {
-    setName(new MessageBuilder("KIT_CONTENT_WILD_NAKED_NAME").asKey().build());
-    setKey("Naked");
-    List<String> description = getPlugin().getLanguageManager().getLanguageListFromKey("KIT_CONTENT_WILD_NAKED_DESCRIPTION");
-    setDescription(description);
-    getPlugin().getServer().getPluginManager().registerEvents(this, getPlugin());
+    super(
+        "Naked",
+        new MessageBuilder("KIT_CONTENT_WILD_NAKED_NAME").asKey().build(),
+        null,
+        new ItemStack(Material.IRON_SWORD)
+    );
     getPlugin().getKitRegistry().registerKit(this);
+    Bukkit.getPluginManager().registerEvents(this, (Plugin) getPlugin());
     setupArmorTypes();
   }
 
@@ -68,22 +74,17 @@ public class NakedKit extends PremiumKit implements Listener {
 
   @Override
   public boolean isUnlockedByPlayer(Player player) {
-    return player.hasPermission("villagedefense.kit.naked") || getPlugin().getPermissionsManager().hasPermissionString("KIT_PREMIUM_UNLOCK", player);
+    return player.hasPermission("villagedefense.kit.naked") || ((Main) getPlugin()).getPermissionsManager().hasPermissionString("KIT_PREMIUM_UNLOCK", player);
   }
 
   @Override
   public void giveKitItems(Player player) {
-    ItemStack itemStack = new ItemStack(getMaterial());
+    ItemStack itemStack = new ItemStack(getItemStack().getType());
     itemStack.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 6);
     itemStack.addUnsafeEnchantment(Enchantment.DAMAGE_UNDEAD, 2);
     itemStack.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
     player.getInventory().addItem(itemStack);
     player.getInventory().addItem(new ItemStack(Material.SADDLE));
-  }
-
-  @Override
-  public Material getMaterial() {
-    return Material.IRON_SWORD;
   }
 
   @Override

@@ -27,7 +27,9 @@ import plugily.projects.minigamesbox.classic.kits.basekits.PremiumKit;
 import plugily.projects.minigamesbox.classic.utils.helper.ArmorHelper;
 import plugily.projects.minigamesbox.classic.utils.helper.WeaponHelper;
 import plugily.projects.minigamesbox.classic.utils.version.VersionUtils;
+import plugily.projects.minigamesbox.api.user.IUser;
 import plugily.projects.minigamesbox.classic.utils.version.xseries.XMaterial;
+import plugily.projects.villagedefense.Main;
 
 import java.util.List;
 
@@ -37,16 +39,18 @@ import java.util.List;
 public class HeavyTankKit extends PremiumKit {
 
   public HeavyTankKit() {
-    setName(new MessageBuilder("KIT_CONTENT_HEAVY_TANK_NAME").asKey().build());
-    setKey("HeavyTank");
-    List<String> description = getPlugin().getLanguageManager().getLanguageListFromKey("KIT_CONTENT_HEAVY_TANK_DESCRIPTION");
-    setDescription(description);
+    super(
+        "HeavyTank",
+        new MessageBuilder("KIT_CONTENT_HEAVY_TANK_NAME").asKey().build(),
+        null,
+        new ItemStack(Material.DIAMOND_CHESTPLATE)
+    );
     getPlugin().getKitRegistry().registerKit(this);
   }
 
   @Override
   public boolean isUnlockedByPlayer(Player player) {
-    return getPlugin().getPermissionsManager().hasPermissionString("KIT_PREMIUM_UNLOCK", player) || player.hasPermission("villagedefense.kit.heavytank");
+    return ((Main) getPlugin()).getPermissionsManager().hasPermissionString("KIT_PREMIUM_UNLOCK", player) || player.hasPermission("villagedefense.kit.heavytank");
   }
 
   @Override
@@ -57,11 +61,6 @@ public class HeavyTankKit extends PremiumKit {
     player.setHealth(40.0);
     ArmorHelper.setArmor(player, ArmorHelper.ArmorType.IRON);
     player.getInventory().addItem(new ItemStack(Material.SADDLE));
-  }
-
-  @Override
-  public Material getMaterial() {
-    return Material.DIAMOND_CHESTPLATE;
   }
 
   @Override

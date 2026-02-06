@@ -51,7 +51,7 @@ public class EnemySpawnerRegistry extends EnemySpawnerRegistryLegacy {
 
   @Override
   public void registerRideableCreatures() {
-    if(ServerVersion.Version.isCurrentEqualOrLower(ServerVersion.Version.v1_8_R3)) {
+    if(ServerVersion.Version.isCurrentEqualOrLower(ServerVersion.Version.v1_8_8)) {
       return;
     }
     FileConfiguration config = ConfigUtils.getConfig(plugin, "creatures");

@@ -38,10 +38,12 @@ import java.util.List;
 public class HardcoreKit extends LevelKit {
 
   public HardcoreKit() {
-    setName(new MessageBuilder("KIT_CONTENT_HARDCORE_NAME").asKey().build());
-    setKey("Hardcore");
-    List<String> description = getPlugin().getLanguageManager().getLanguageListFromKey("KIT_CONTENT_HARDCORE_DESCRIPTION");
-    setDescription(description);
+    super(
+        "Hardcore",
+        new MessageBuilder("KIT_CONTENT_HARDCORE_NAME").asKey().build(),
+        null,
+        new ItemStack(XMaterial.PLAYER_HEAD.parseMaterial())
+    );
     setLevel(getKitsConfig().getInt("Required-Level.Hardcore"));
     getPlugin().getKitRegistry().registerKit(this);
   }
@@ -58,11 +60,6 @@ public class HardcoreKit extends LevelKit {
     player.getInventory().addItem(VersionUtils.getPotion(PotionType.INSTANT_HEAL, 2, true));
     player.getInventory().addItem(new ItemStack(Material.COOKIE, 10));
     VersionUtils.setMaxHealth(player, 10.0);
-  }
-
-  @Override
-  public Material getMaterial() {
-    return XMaterial.PLAYER_HEAD.parseMaterial();
   }
 
   @Override

@@ -63,12 +63,11 @@ public class CreatureUtils {
   }
 
   public static BaseCreatureInitializer initCreatureInitializer() {
-    switch(ServerVersion.Version.getCurrent()) {
-      case v1_8_R3:
-        return new plugily.projects.villagedefense.creatures.v1_8_R3.CreatureInitializer();
-      default:
-        return new plugily.projects.villagedefense.creatures.v1_9_UP.CreatureInitializer();
+    if(ServerVersion.Version.isCurrentEqualOrLower(ServerVersion.Version.v1_8_8)) {
+      return new plugily.projects.villagedefense.creatures.v1_8_R3.CreatureInitializer();
     }
+    // TODO(1.8.8): 1.9+ creature initializer excluded from legacy build.
+    return new plugily.projects.villagedefense.creatures.v1_8_R3.CreatureInitializer();
   }
 
   public static Object getPrivateField(String fieldName, Class<?> clazz, Object object) {

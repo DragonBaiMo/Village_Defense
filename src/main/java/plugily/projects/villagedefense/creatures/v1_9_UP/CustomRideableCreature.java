@@ -74,7 +74,7 @@ public class CustomRideableCreature {
         }
       }
       creature.setRemoveWhenFarAway(false);
-      if(ServerVersion.Version.isCurrentEqualOrHigher(ServerVersion.Version.v1_16_R3)) {
+      if(ServerVersion.Version.isCurrentEqualOrHigher(ServerVersion.Version.v1_16)) {
         creature.setInvisible(false);
       }
       return creature;

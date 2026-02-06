@@ -38,10 +38,12 @@ import java.util.List;
 public class HealerKit extends LevelKit {
 
   public HealerKit() {
-    setName(new MessageBuilder("KIT_CONTENT_HEALER_NAME").asKey().build());
-    setKey("Healer");
-    List<String> description = getPlugin().getLanguageManager().getLanguageListFromKey("KIT_CONTENT_HEALER_DESCRIPTION");
-    setDescription(description);
+    super(
+        "Healer",
+        new MessageBuilder("KIT_CONTENT_HEALER_NAME").asKey().build(),
+        null,
+        new ItemStack(XMaterial.POPPY.parseMaterial())
+    );
     setLevel(getKitsConfig().getInt("Required-Level.Healer"));
     getPlugin().getKitRegistry().registerKit(this);
   }
@@ -58,11 +60,6 @@ public class HealerKit extends LevelKit {
     player.getInventory().addItem(new ItemStack(XMaterial.COOKED_PORKCHOP.parseMaterial(), 8));
     player.getInventory().addItem(VersionUtils.getPotion(PotionType.INSTANT_HEAL, 2, true));
     player.getInventory().addItem(VersionUtils.getPotion(PotionType.REGEN, 1, true));
-  }
-
-  @Override
-  public Material getMaterial() {
-    return XMaterial.POPPY.parseMaterial();
   }
 
   @Override

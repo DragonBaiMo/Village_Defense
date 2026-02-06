@@ -17,3 +17,11 @@
  */
 
 rootProject.name = "villagedefense"
+
+pluginManagement {
+  repositories {
+    mavenLocal()
+    gradlePluginPortal()
+    mavenCentral()
+  }
+}

@@ -23,14 +23,20 @@ plugins {
     java
 }
 
+// Windows default encoding may be GBK; force UTF-8 for Java sources/resources.
+tasks.withType<JavaCompile> {
+    options.encoding = "UTF-8"
+}
+
 repositories {
     mavenLocal()
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     maven("https://oss.sonatype.org/content/repositories/snapshots")
     maven("https://oss.sonatype.org/content/repositories/central")
-    maven(uri("https://papermc.io/repo/repository/maven-public/"))
     maven(uri("https://maven.plugily.xyz/releases"))
     maven(uri("https://maven.plugily.xyz/snapshots"))
+    // Put PaperMC behind Plugily repos to avoid build failures on PaperMC timeouts.
+    maven(uri("https://papermc.io/repo/repository/maven-public/"))
     maven(uri("https://repo.citizensnpcs.co/"))
     maven(uri("https://repo.maven.apache.org/maven2/"))
 }
@@ -38,10 +44,43 @@ repositories {
 
 
 dependencies {
-    implementation("plugily.projects:MiniGamesBox-Classic:1.3.1") { isTransitive = false }
-    compileOnly("org.spigotmc:spigot-api:1.19.3-R0.1-SNAPSHOT")
+    // Use local Maven repository copy to avoid remote timeouts.
+    // (F:\Maven\mavenrepository contains MiniGamesBox-Classic 1.4.5 built for Java 8)
+    implementation(files("F:/Maven/mavenrepository/plugily/projects/MiniGamesBox-Classic/1.4.5/MiniGamesBox-Classic-1.4.5.jar"))
+    // Target legacy runtime (Spigot 1.8.8): compile against 1.8.8 API only.
+    // NOTE: do not add modern Spigot API here, otherwise incompatible calls may compile.
+    // 1.8.8-only build: compile against Spigot API 1.8.8.
+    // Use a local jar to avoid remote resolution (and bungeecord-chat snapshot downloads).
+    compileOnly(files("F:/Maven/mavenrepository/org/spigotmc/spigot-api/1.8.8-R0.1-SNAPSHOT/spigot-api-1.8.8-R0.1-SNAPSHOT.jar"))
     compileOnly("org.jetbrains:annotations:24.0.1")
+    // Provides CraftBukkit/NMS classes for v1_8_R3 compilation.
     compileOnly(files("lib/spigot/1.8.8-R0.1.jar"))
+
+    // NMS 1.8.8 sources reference Guava Predicate.
+    compileOnly("com.google.guava:guava:17.0")
+
+    // Citizens API (runtime plugin dependency, not shaded).
+    compileOnly(files("lib/Citizens-2.0.30-b2803.jar"))
+}
+
+// 1.8.8-only build: exclude 1.9+ implementation sources.
+sourceSets {
+    named("main") {
+        java {
+            exclude(
+                "**/creatures/v1_9_UP/**",
+                "**/arena/managers/enemy/spawner/EnemySpawnerRegistry.java",
+                "**/arena/managers/CreatureTargetManager.java"
+            )
+        }
+    }
+}
+
+configurations {
+    // Exclude bungeecord-chat dependency from all configurations to avoid remote snapshot resolution.
+    all {
+        exclude(group = "net.md-5", module = "bungeecord-chat")
+    }
 }
 
 group = "plugily.projects"
@@ -49,6 +88,17 @@ version = "4.7.0"
 description = "VillageDefense"
 java {
     withJavadocJar()
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(8))
+    }
+}
+
+tasks.withType<JavaCompile> {
+    // Windows default encoding may be GBK; force UTF-8 for Java sources/resources.
+    options.encoding = "UTF-8"
 }
 
 tasks {

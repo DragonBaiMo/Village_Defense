@@ -18,6 +18,7 @@
 
 package plugily.projects.villagedefense.kits.premium;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -27,6 +28,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.plugin.Plugin;
 import plugily.projects.minigamesbox.classic.handlers.language.MessageBuilder;
 import plugily.projects.minigamesbox.classic.kits.basekits.PremiumKit;
 import plugily.projects.minigamesbox.classic.utils.helper.ArmorHelper;
@@ -37,7 +39,9 @@ import plugily.projects.minigamesbox.classic.utils.misc.complement.ComplementAcc
 import plugily.projects.minigamesbox.classic.utils.version.VersionUtils;
 import plugily.projects.minigamesbox.classic.utils.version.events.api.PlugilyPlayerInteractEvent;
 import plugily.projects.minigamesbox.classic.utils.version.xseries.XMaterial;
+import plugily.projects.minigamesbox.api.user.IUser;
 import plugily.projects.minigamesbox.inventory.normal.NormalFastInv;
+import plugily.projects.villagedefense.Main;
 import plugily.projects.villagedefense.arena.Arena;
 
 import java.util.Collections;
@@ -49,17 +53,19 @@ import java.util.List;
 public class TeleporterKit extends PremiumKit implements Listener {
 
   public TeleporterKit() {
-    setName(new MessageBuilder("KIT_CONTENT_TELEPORTER_NAME").asKey().build());
-    setKey("Teleporter");
-    List<String> description = getPlugin().getLanguageManager().getLanguageListFromKey("KIT_CONTENT_TELEPORTER_DESCRIPTION");
-    setDescription(description);
-    getPlugin().getServer().getPluginManager().registerEvents(this, getPlugin());
+    super(
+        "Teleporter",
+        new MessageBuilder("KIT_CONTENT_TELEPORTER_NAME").asKey().build(),
+        null,
+        new ItemStack(Material.ENDER_PEARL)
+    );
     getPlugin().getKitRegistry().registerKit(this);
+    Bukkit.getPluginManager().registerEvents(this, (Plugin) getPlugin());
   }
 
   @Override
   public boolean isUnlockedByPlayer(Player player) {
-    return getPlugin().getPermissionsManager().hasPermissionString("KIT_PREMIUM_UNLOCK", player) || player.hasPermission("villagedefense.kit.teleporter");
+    return ((Main) getPlugin()).getPermissionsManager().hasPermissionString("KIT_PREMIUM_UNLOCK", player) || player.hasPermission("villagedefense.kit.teleporter");
   }
 
   @Override
@@ -73,11 +79,6 @@ public class TeleporterKit extends PremiumKit implements Listener {
         .name(new MessageBuilder("KIT_CONTENT_TELEPORTER_GAME_ITEM_NAME").asKey().build())
         .lore(getPlugin().getLanguageManager().getLanguageListFromKey("KIT_CONTENT_TELEPORTER_GAME_ITEM_DESCRIPTION"))
         .build());
-  }
-
-  @Override
-  public Material getMaterial() {
-    return Material.ENDER_PEARL;
   }
 
   @Override
@@ -113,7 +114,7 @@ public class TeleporterKit extends PremiumKit implements Listener {
       }
       slots++;
     }
-    slots = getPlugin().getBukkitHelper().serializeInt(slots);
+    slots = ((Main) getPlugin()).getBukkitHelper().serializeInt(slots);
     prepareTeleporterGui(player, arena, slots);
   }
 

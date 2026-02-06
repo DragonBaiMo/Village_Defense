@@ -29,7 +29,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import plugily.projects.minigamesbox.classic.handlers.language.MessageBuilder;
-import plugily.projects.minigamesbox.classic.user.User;
+import plugily.projects.minigamesbox.api.user.IUser;
 import plugily.projects.minigamesbox.classic.utils.configuration.ConfigUtils;
 import plugily.projects.minigamesbox.classic.utils.helper.ItemUtils;
 import plugily.projects.minigamesbox.classic.utils.misc.complement.ComplementAccessor;
@@ -156,7 +156,7 @@ public class ShopManager {
           return;
         }
 
-        User user = plugin.getUserManager().getUser(player);
+        IUser user = plugin.getUserManager().getUser(player);
         int orbs = user.getStatistic("ORBS");
 
         if(cost > orbs) {
@@ -205,7 +205,7 @@ public class ShopManager {
     }
   }
 
-  private void adjustOrbs(User user, int cost) {
+  private void adjustOrbs(IUser user, int cost) {
     user.adjustStatistic("ORBS", -cost);
     arena.changeArenaOptionBy("TOTAL_ORBS_SPENT", cost);
   }

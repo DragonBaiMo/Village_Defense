@@ -31,18 +31,21 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import plugily.projects.minigamesbox.classic.handlers.language.MessageBuilder;
 import plugily.projects.minigamesbox.classic.kits.basekits.PremiumKit;
-import plugily.projects.minigamesbox.classic.user.User;
+import plugily.projects.minigamesbox.api.user.IUser;
 import plugily.projects.minigamesbox.classic.utils.helper.ArmorHelper;
 import plugily.projects.minigamesbox.classic.utils.helper.ItemBuilder;
 import plugily.projects.minigamesbox.classic.utils.helper.ItemUtils;
 import plugily.projects.minigamesbox.classic.utils.misc.complement.ComplementAccessor;
 import plugily.projects.minigamesbox.classic.utils.version.VersionUtils;
 import plugily.projects.minigamesbox.classic.utils.version.events.api.PlugilyPlayerInteractEvent;
+import org.bukkit.plugin.Plugin;
 import plugily.projects.minigamesbox.classic.utils.version.xseries.XMaterial;
+import plugily.projects.villagedefense.Main;
 import plugily.projects.villagedefense.creatures.CreatureUtils;
 
 import java.util.ArrayList;
@@ -58,22 +61,24 @@ public class WizardKit extends PremiumKit implements Listener {
   private final List<Player> wizardsOnDuty = new ArrayList<>();
 
   public WizardKit() {
-    setName(new MessageBuilder("KIT_CONTENT_WIZARD_NAME").asKey().build());
-    setKey("Wizard");
-    List<String> description = getPlugin().getLanguageManager().getLanguageListFromKey("KIT_CONTENT_WIZARD_DESCRIPTION");
-    setDescription(description);
+    super(
+        "Wizard",
+        new MessageBuilder("KIT_CONTENT_WIZARD_NAME").asKey().build(),
+        null,
+        new ItemStack(Material.BLAZE_ROD)
+    );
     getPlugin().getKitRegistry().registerKit(this);
-    getPlugin().getServer().getPluginManager().registerEvents(this, getPlugin());
+    Bukkit.getPluginManager().registerEvents(this, (Plugin) getPlugin());
   }
 
   @Override
   public boolean isUnlockedByPlayer(Player player) {
-    return getPlugin().getPermissionsManager().hasPermissionString("KIT_PREMIUM_UNLOCK", player) || player.hasPermission("villagedefense.kit.wizard");
+    return ((Main) getPlugin()).getPermissionsManager().hasPermissionString("KIT_PREMIUM_UNLOCK", player) || player.hasPermission("villagedefense.kit.wizard");
   }
 
   @Override
   public void giveKitItems(Player player) {
-    player.getInventory().addItem(new ItemBuilder(getMaterial())
+    player.getInventory().addItem(new ItemBuilder(getItemStack().getType())
         .name(new MessageBuilder("KIT_CONTENT_WIZARD_GAME_ITEM_WAND_NAME").asKey().build())
         .lore(getPlugin().getLanguageManager().getLanguageListFromKey("KIT_CONTENT_WIZARD_GAME_ITEM_WAND_DESCRIPTION"))
         .build());
@@ -85,11 +90,6 @@ public class WizardKit extends PremiumKit implements Listener {
     ArmorHelper.setColouredArmor(Color.GRAY, player);
     player.getInventory().addItem(new ItemStack(Material.SADDLE));
 
-  }
-
-  @Override
-  public Material getMaterial() {
-    return Material.BLAZE_ROD;
   }
 
   @Override
@@ -122,7 +122,7 @@ public class WizardKit extends PremiumKit implements Listener {
       return;
     }
 
-    User user = getPlugin().getUserManager().getUser(event.getPlayer());
+    IUser user = getPlugin().getUserManager().getUser(event.getPlayer());
     if(user.isSpectator() || !(user.getKit() instanceof WizardKit)) {
       return;
     }
@@ -142,15 +142,15 @@ public class WizardKit extends PremiumKit implements Listener {
       } else {
         player.setHealth(VersionUtils.getMaxHealth(player));
       }
-      getPlugin().getBukkitHelper().takeOneItem(player, stack);
+      ((Main) getPlugin()).getBukkitHelper().takeOneItem(player, stack);
       VersionUtils.setGlowing(player, true);
       applyRageParticles(player);
       for(Entity entity : player.getNearbyEntities(2, 2, 2)) {
         if(CreatureUtils.isEnemy(entity)) {
-          ((Creature) entity).damage(9.0, player);
+        ((Creature) entity).damage(9.0, player);
         }
       }
-      Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {
+      Bukkit.getScheduler().runTaskLater((Plugin) getPlugin(), () -> {
         VersionUtils.setGlowing(player, false);
         wizardsOnDuty.remove(player);
       }, 20L * 15);
@@ -175,7 +175,7 @@ public class WizardKit extends PremiumKit implements Listener {
           cancel();
         }
       }
-    }.runTaskTimer(getPlugin(), 0, 2);
+    }.runTaskTimer((Plugin) getPlugin(), 0, 2);
   }
 
   private void applyMagicAttack(Player player) {
@@ -204,7 +204,7 @@ public class WizardKit extends PremiumKit implements Listener {
           cancel();
         }
       }
-    }.runTaskTimer(getPlugin(), 0, 1);
+    }.runTaskTimer((Plugin) getPlugin(), 0, 1);
   }
 
 }

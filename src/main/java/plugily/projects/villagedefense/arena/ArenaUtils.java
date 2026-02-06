@@ -25,7 +25,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 import plugily.projects.minigamesbox.classic.arena.PluginArenaUtils;
 import plugily.projects.minigamesbox.classic.handlers.language.MessageBuilder;
-import plugily.projects.minigamesbox.classic.user.User;
+import plugily.projects.minigamesbox.api.user.IUser;
 import plugily.projects.minigamesbox.classic.utils.version.VersionUtils;
 import plugily.projects.villagedefense.api.event.player.VillagePlayerRespawnEvent;
 
@@ -54,7 +54,7 @@ public class ArenaUtils extends PluginArenaUtils {
         continue;
       }
 
-      User user = getPlugin().getUserManager().getUser(player);
+      IUser user = getPlugin().getUserManager().getUser(player);
       if(user.isPermanentSpectator() && !getPlugin().getConfigPreferences().getOption("RESPAWN_IN_GAME_JOIN")) {
         continue;
       }

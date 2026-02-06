@@ -28,12 +28,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.entity.Wolf;
 import org.jetbrains.annotations.NotNull;
-import plugily.projects.minigamesbox.classic.arena.ArenaState;
+import plugily.projects.minigamesbox.api.arena.IArenaState;
 import plugily.projects.minigamesbox.classic.arena.PluginArena;
 import plugily.projects.minigamesbox.classic.handlers.language.MessageBuilder;
 import plugily.projects.minigamesbox.classic.utils.version.ServerVersion;
 import plugily.projects.villagedefense.Main;
-import plugily.projects.villagedefense.arena.managers.CreatureTargetManager;
 import plugily.projects.villagedefense.arena.managers.EnemySpawnManager;
 import plugily.projects.villagedefense.arena.managers.ScoreboardManager;
 import plugily.projects.villagedefense.arena.managers.ShopManager;
@@ -74,7 +73,7 @@ public class Arena extends PluginArena {
 
   private ShopManager shopManager;
   private EnemySpawnManager enemySpawnManager;
-  private CreatureTargetManager creatureTargetManager;
+  // TODO(1.8.8): advanced target manager removed; consider adding legacy implementation if needed.
 
   private boolean fighting = false;
 
@@ -83,8 +82,7 @@ public class Arena extends PluginArena {
     setPluginValues();
     shopManager = new ShopManager(this);
     enemySpawnManager = new EnemySpawnManager(this);
-    creatureTargetManager = new CreatureTargetManager(this);
-    if(ServerVersion.Version.isCurrentEqualOrLower(ServerVersion.Version.v1_16_R1)) {
+    if(ServerVersion.Version.isCurrentEqualOrLower(ServerVersion.Version.v1_16)) {
       mapRestorerManager = new MapRestorerManagerLegacy(this);
     } else {
       mapRestorerManager = new MapRestorerManager(this);
@@ -92,10 +90,10 @@ public class Arena extends PluginArena {
     setMapRestorerManager(mapRestorerManager);
     setScoreboardManager(new ScoreboardManager(this));
 
-    addGameStateHandler(ArenaState.ENDING, new EndingState());
-    addGameStateHandler(ArenaState.IN_GAME, new InGameState());
-    addGameStateHandler(ArenaState.RESTARTING, new RestartingState());
-    addGameStateHandler(ArenaState.STARTING, new StartingState());
+    addGameStateHandler(IArenaState.ENDING, new EndingState());
+    addGameStateHandler(IArenaState.IN_GAME, new InGameState());
+    addGameStateHandler(IArenaState.RESTARTING, new RestartingState());
+    addGameStateHandler(IArenaState.STARTING, new StartingState());
   }
 
   public void reloadShopManager() {
@@ -125,9 +123,7 @@ public class Arena extends PluginArena {
     return enemySpawnManager;
   }
 
-  public CreatureTargetManager getCreatureTargetManager() {
-    return creatureTargetManager;
-  }
+  // Target manager removed in 1.8-only build.
 
   public void clearVillagers() {
     for(Entity entity : plugin.getBukkitHelper().getNearbyEntities(getStartLocation(), 50)) {

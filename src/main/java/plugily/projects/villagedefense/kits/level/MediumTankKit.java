@@ -36,10 +36,12 @@ import java.util.List;
 public class MediumTankKit extends LevelKit {
 
   public MediumTankKit() {
-    setName(new MessageBuilder("KIT_CONTENT_MEDIUM_TANK_NAME").asKey().build());
-    setKey("MediumTank");
-    List<String> description = getPlugin().getLanguageManager().getLanguageListFromKey("KIT_CONTENT_MEDIUM_TANK_DESCRIPTION");
-    setDescription(description);
+    super(
+        "MediumTank",
+        new MessageBuilder("KIT_CONTENT_MEDIUM_TANK_NAME").asKey().build(),
+        null,
+        new ItemStack(Material.IRON_CHESTPLATE)
+    );
     setLevel(getKitsConfig().getInt("Required-Level.MediumTank"));
     getPlugin().getKitRegistry().registerKit(this);
   }
@@ -56,11 +58,6 @@ public class MediumTankKit extends LevelKit {
     ArmorHelper.setArmor(player, ArmorHelper.ArmorType.IRON);
     VersionUtils.setMaxHealth(player, 32.0);
     player.setHealth(32.0);
-  }
-
-  @Override
-  public Material getMaterial() {
-    return Material.IRON_CHESTPLATE;
   }
 
   @Override

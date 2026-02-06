@@ -38,11 +38,11 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-import plugily.projects.minigamesbox.classic.arena.ArenaState;
+import plugily.projects.minigamesbox.api.arena.IArenaState;
 import plugily.projects.minigamesbox.classic.arena.PluginArenaEvents;
 import plugily.projects.minigamesbox.classic.handlers.items.SpecialItem;
 import plugily.projects.minigamesbox.classic.handlers.language.MessageBuilder;
-import plugily.projects.minigamesbox.classic.user.User;
+import plugily.projects.minigamesbox.api.user.IUser;
 import plugily.projects.minigamesbox.classic.utils.misc.complement.ComplementAccessor;
 import plugily.projects.minigamesbox.classic.utils.version.VersionUtils;
 import plugily.projects.minigamesbox.classic.utils.version.events.api.PlugilyEntityPickupItemEvent;
@@ -232,12 +232,12 @@ public class ArenaEvents extends PluginArenaEvents {
     plugin.getHolidayManager().applyHolidayDeathEffects(player);
     player.spigot().respawn();
     plugin.getServer().getScheduler().runTask(plugin, () -> {
-      if(arena.getArenaState() == ArenaState.STARTING) {
+      if(arena.getArenaState() == IArenaState.STARTING) {
         VersionUtils.teleport(player, arena.getStartLocation());
         return;
       }
 
-      if(arena.getArenaState() == ArenaState.ENDING || arena.getArenaState() == ArenaState.RESTARTING) {
+      if(arena.getArenaState() == IArenaState.ENDING || arena.getArenaState() == IArenaState.RESTARTING) {
         player.getInventory().clear();
         player.setFlying(false);
         player.setAllowFlight(false);
@@ -246,7 +246,7 @@ public class ArenaEvents extends PluginArenaEvents {
         return;
       }
 
-      User user = plugin.getUserManager().getUser(player);
+      IUser user = plugin.getUserManager().getUser(player);
 
       plugin.getUserManager().addStat(user, plugin.getStatsStorage().getStatisticType("DEATHS"));
       VersionUtils.teleport(player, arena.getStartLocation());
@@ -265,15 +265,15 @@ public class ArenaEvents extends PluginArenaEvents {
 
       plugin.getSpecialItemManager().addSpecialItemsOfStage(player, SpecialItem.DisplayStage.SPECTATOR);
 
-      arena.getCreatureTargetManager().unTargetPlayerFromZombies(player, arena);
+      // TODO(1.8.8): optional explicit retargeting removal; keep vanilla behavior for now.
     });
   }
 
-  private void sendSpectatorActionBar(User user, Arena arena) {
+  private void sendSpectatorActionBar(IUser user, Arena arena) {
     new BukkitRunnable() {
       @Override
       public void run() {
-        if(arena.getArenaState() == ArenaState.ENDING || !user.isSpectator()) {
+        if(arena.getArenaState() == IArenaState.ENDING || !user.isSpectator()) {
           cancel();
           return;
         }
@@ -297,7 +297,7 @@ public class ArenaEvents extends PluginArenaEvents {
     Player player = e.getPlayer();
     player.setAllowFlight(true);
     player.setFlying(true);
-    User user = plugin.getUserManager().getUser(player);
+    IUser user = plugin.getUserManager().getUser(player);
     if(!user.isSpectator()) {
       user.setSpectator(true);
       player.setGameMode(GameMode.SURVIVAL);
@@ -309,7 +309,7 @@ public class ArenaEvents extends PluginArenaEvents {
     e.setRespawnLocation(arena.getStartLocation());
   }
 
-  private void modifyUserOrbs(User user) {
+  private void modifyUserOrbs(IUser user) {
     int deathValue = plugin.getConfig().getInt("Orbs.Death.Value", 50);
     int current = user.getStatistic("ORBS");
     switch(getOrbDeathType()) {

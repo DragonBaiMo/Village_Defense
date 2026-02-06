@@ -25,7 +25,9 @@ import plugily.projects.minigamesbox.classic.handlers.language.MessageBuilder;
 import plugily.projects.minigamesbox.classic.kits.basekits.PremiumKit;
 import plugily.projects.minigamesbox.classic.utils.helper.ArmorHelper;
 import plugily.projects.minigamesbox.classic.utils.helper.WeaponHelper;
+import plugily.projects.minigamesbox.api.user.IUser;
 import plugily.projects.minigamesbox.classic.utils.version.xseries.XMaterial;
+import plugily.projects.villagedefense.Main;
 import plugily.projects.villagedefense.arena.Arena;
 
 import java.util.List;
@@ -36,16 +38,18 @@ import java.util.List;
 public class DogFriendKit extends PremiumKit {
 
   public DogFriendKit() {
-    setName(new MessageBuilder("KIT_CONTENT_DOG_FRIEND_NAME").asKey().build());
-    setKey("DogFriend");
-    List<String> description = getPlugin().getLanguageManager().getLanguageListFromKey("KIT_CONTENT_DOG_FRIEND_DESCRIPTION");
-    setDescription(description);
+    super(
+        "DogFriend",
+        new MessageBuilder("KIT_CONTENT_DOG_FRIEND_NAME").asKey().build(),
+        null,
+        new ItemStack(Material.BONE)
+    );
     getPlugin().getKitRegistry().registerKit(this);
   }
 
   @Override
   public boolean isUnlockedByPlayer(Player player) {
-    return getPlugin().getPermissionsManager().hasPermissionString("KIT_PREMIUM_UNLOCK", player) || player.hasPermission("villagedefense.kit.dogfriend");
+    return ((Main) getPlugin()).getPermissionsManager().hasPermissionString("KIT_PREMIUM_UNLOCK", player) || player.hasPermission("villagedefense.kit.dogfriend");
   }
 
   @Override
@@ -62,11 +66,6 @@ public class DogFriendKit extends PremiumKit {
     for(int i = 0; i < 3; i++) {
       arena.spawnWolf(start, player);
     }
-  }
-
-  @Override
-  public Material getMaterial() {
-    return Material.BONE;
   }
 
   @Override

@@ -21,6 +21,7 @@ package plugily.projects.villagedefense.kits.free;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import plugily.projects.minigamesbox.api.user.IUser;
 import plugily.projects.minigamesbox.classic.handlers.language.MessageBuilder;
 import plugily.projects.minigamesbox.classic.kits.basekits.FreeKit;
 import plugily.projects.minigamesbox.classic.utils.helper.ArmorHelper;
@@ -35,10 +36,14 @@ import java.util.List;
 public class KnightKit extends FreeKit {
 
   public KnightKit() {
-    setName(new MessageBuilder("KIT_CONTENT_KNIGHT_NAME").asKey().build());
-    setKey("Knight");
+    super(
+        "Knight",
+        new MessageBuilder("KIT_CONTENT_KNIGHT_NAME").asKey().build(),
+        null, // description set below
+        new ItemStack(XMaterial.WOODEN_SWORD.parseMaterial())
+    );
     List<String> description = getPlugin().getLanguageManager().getLanguageListFromKey("KIT_CONTENT_KNIGHT_DESCRIPTION");
-    setDescription(description);
+    // Note: description is set via config/language system
     getPlugin().getKitRegistry().registerKit(this);
     getPlugin().getKitRegistry().setDefaultKit(this);
   }
@@ -54,11 +59,6 @@ public class KnightKit extends FreeKit {
     ArmorHelper.setArmor(player, ArmorHelper.ArmorType.LEATHER);
     player.getInventory().addItem(new ItemStack(XMaterial.COOKED_PORKCHOP.parseMaterial(), 8));
 
-  }
-
-  @Override
-  public Material getMaterial() {
-    return XMaterial.WOODEN_SWORD.parseMaterial();
   }
 
   @Override

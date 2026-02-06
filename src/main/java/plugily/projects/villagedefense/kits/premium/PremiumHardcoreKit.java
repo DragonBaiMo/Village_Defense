@@ -25,7 +25,9 @@ import org.bukkit.inventory.ItemStack;
 import plugily.projects.minigamesbox.classic.handlers.language.MessageBuilder;
 import plugily.projects.minigamesbox.classic.kits.basekits.PremiumKit;
 import plugily.projects.minigamesbox.classic.utils.helper.WeaponHelper;
+import plugily.projects.minigamesbox.api.user.IUser;
 import plugily.projects.minigamesbox.classic.utils.version.VersionUtils;
+import plugily.projects.villagedefense.Main;
 
 import java.util.List;
 
@@ -35,29 +37,26 @@ import java.util.List;
 public class PremiumHardcoreKit extends PremiumKit {
 
   public PremiumHardcoreKit() {
-    setName(new MessageBuilder("KIT_CONTENT_PREMIUM_HARDCORE_NAME").asKey().build());
-    setKey("PremiumHardcore");
-    List<String> description = getPlugin().getLanguageManager().getLanguageListFromKey("KIT_CONTENT_PREMIUM_HARDCORE_DESCRIPTION");
-    setDescription(description);
+    super(
+        "PremiumHardcore",
+        new MessageBuilder("KIT_CONTENT_PREMIUM_HARDCORE_NAME").asKey().build(),
+        null,
+        new ItemStack(Material.DIAMOND_SWORD)
+    );
     getPlugin().getKitRegistry().registerKit(this);
   }
 
   @Override
   public boolean isUnlockedByPlayer(Player player) {
-    return getPlugin().getPermissionsManager().hasPermissionString("KIT_PREMIUM_UNLOCK", player) || player.hasPermission("villagedefense.kit.premiumhardcore");
+    return ((Main) getPlugin()).getPermissionsManager().hasPermissionString("KIT_PREMIUM_UNLOCK", player) || player.hasPermission("villagedefense.kit.premiumhardcore");
   }
 
   @Override
   public void giveKitItems(Player player) {
-    player.getInventory().addItem(WeaponHelper.getEnchanted(new ItemStack(getMaterial()),
+    player.getInventory().addItem(WeaponHelper.getEnchanted(new ItemStack(getItemStack().getType()),
         new Enchantment[]{Enchantment.DAMAGE_ALL}, new int[]{11}));
     VersionUtils.setMaxHealth(player, 6);
     player.getInventory().addItem(new ItemStack(Material.SADDLE));
-  }
-
-  @Override
-  public Material getMaterial() {
-    return Material.DIAMOND_SWORD;
   }
 
   @Override

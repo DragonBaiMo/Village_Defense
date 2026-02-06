@@ -69,7 +69,7 @@ public class CustomCreature implements SimpleEnemySpawner {
   public CustomCreature(Main plugin, int waveMin, int waveMax, PriorityTarget priorityTarget, boolean explodeTarget, String key, EntityType entityType, boolean baby, boolean breed, int age, boolean ageLook, int expDrop, boolean holidayEffects, List<Rate> rates, Map<Attribute, Double> attributes, List<Equipment> equipments, ItemStack dropItem) {
     this.priorityTarget = priorityTarget;
     this.explodeTarget = explodeTarget;
-    if(ServerVersion.Version.isCurrentEqualOrLower(ServerVersion.Version.v1_8_R3)) {
+    if(ServerVersion.Version.isCurrentEqualOrLower(ServerVersion.Version.v1_8_8)) {
       throw new IllegalStateException("Couldn't create Creature " + key + " as its only for Version 1.9+");
     }
     this.plugin = plugin;

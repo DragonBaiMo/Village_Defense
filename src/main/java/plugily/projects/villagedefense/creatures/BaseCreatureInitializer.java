@@ -1,33 +1,22 @@
-
 /*
  *  Village Defense - Protect villagers from hordes of zombies
- *  Copyright (c) 2023 Plugily Projects - maintained by Tigerpanzer_02 and contributors
  *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *  1.8.8-only source set: this interface must NOT reference 1.9+ Bukkit APIs
+ *  (e.g. org.bukkit.attribute.Attribute).
  */
 
 package plugily.projects.villagedefense.creatures;
 
 import org.bukkit.Location;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.IronGolem;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Villager;
 import org.bukkit.entity.Wolf;
-import plugily.projects.minigamesbox.classic.utils.misc.MiscUtils;
 
+/**
+ * Version-safe creature initializer contract.
+ */
 public interface BaseCreatureInitializer {
   Villager spawnVillager(Location location);
 
@@ -51,15 +40,24 @@ public interface BaseCreatureInitializer {
 
   Creature spawnVillagerSlayer(Location location);
 
+  /**
+   * 1.8 fallback: best-effort no-op.
+   */
   default void applyFollowRange(Creature zombie) {
-    MiscUtils.getEntityAttribute(zombie, Attribute.GENERIC_FOLLOW_RANGE).ifPresent(ai -> ai.setBaseValue(200.0D));
+    // 1.8 does not expose Attribute API; handled in v1_8_R3 NMS implementation.
   }
 
+  /**
+   * 1.8 fallback: best-effort no-op.
+   */
   default void applyDamageModifier(LivingEntity entity, double value) {
-    MiscUtils.getEntityAttribute(entity, Attribute.GENERIC_ATTACK_DAMAGE).ifPresent(ai -> ai.setBaseValue(value));
+    // handled in NMS implementation
   }
 
+  /**
+   * 1.8 fallback: best-effort no-op.
+   */
   default void applySpeedModifier(LivingEntity entity, double value) {
-    MiscUtils.getEntityAttribute(entity, Attribute.GENERIC_MOVEMENT_SPEED).ifPresent(ai -> ai.setBaseValue(value));
+    // handled in NMS implementation
   }
 }

@@ -18,6 +18,7 @@
 
 package plugily.projects.villagedefense.kits.level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Creature;
@@ -25,11 +26,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import plugily.projects.minigamesbox.classic.handlers.language.MessageBuilder;
 import plugily.projects.minigamesbox.classic.kits.basekits.LevelKit;
-import plugily.projects.minigamesbox.classic.user.User;
+import plugily.projects.minigamesbox.api.user.IUser;
 import plugily.projects.minigamesbox.classic.utils.helper.ItemBuilder;
 import plugily.projects.minigamesbox.classic.utils.helper.ItemUtils;
 import plugily.projects.minigamesbox.classic.utils.helper.WeaponHelper;
@@ -37,6 +39,7 @@ import plugily.projects.minigamesbox.classic.utils.misc.complement.ComplementAcc
 import plugily.projects.minigamesbox.classic.utils.version.VersionUtils;
 import plugily.projects.minigamesbox.classic.utils.version.events.api.PlugilyPlayerInteractEvent;
 import plugily.projects.minigamesbox.classic.utils.version.xseries.XMaterial;
+import plugily.projects.villagedefense.Main;
 import plugily.projects.villagedefense.arena.Arena;
 
 import java.util.List;
@@ -48,13 +51,15 @@ import java.util.Random;
 public class ZombieFinderKit extends LevelKit implements Listener {
 
   public ZombieFinderKit() {
-    setName(new MessageBuilder("KIT_CONTENT_ZOMBIE_TELEPORTER_NAME").asKey().build());
-    setKey("ZombieFinder");
-    List<String> description = getPlugin().getLanguageManager().getLanguageListFromKey("KIT_CONTENT_ZOMBIE_TELEPORTER_DESCRIPTION");
-    setDescription(description);
+    super(
+        "ZombieFinder",
+        new MessageBuilder("KIT_CONTENT_ZOMBIE_TELEPORTER_NAME").asKey().build(),
+        null,
+        new ItemStack(Material.FISHING_ROD)
+    );
     setLevel(getKitsConfig().getInt("Required-Level.ZombieFinder"));
-    getPlugin().getServer().getPluginManager().registerEvents(this, getPlugin());
     getPlugin().getKitRegistry().registerKit(this);
+    Bukkit.getPluginManager().registerEvents(this, (Plugin) getPlugin());
   }
 
   @Override
@@ -73,11 +78,6 @@ public class ZombieFinderKit extends LevelKit implements Listener {
   }
 
   @Override
-  public Material getMaterial() {
-    return Material.FISHING_ROD;
-  }
-
-  @Override
   public void reStock(Player player) {
     //no restock items for this kit
   }
@@ -89,7 +89,7 @@ public class ZombieFinderKit extends LevelKit implements Listener {
         || !ComplementAccessor.getComplement().getDisplayName(event.getItem().getItemMeta()).equals(new MessageBuilder("KIT_CONTENT_ZOMBIE_TELEPORTER_GAME_ITEM_GUI").asKey().build())) {
       return;
     }
-    User user = getPlugin().getUserManager().getUser(event.getPlayer());
+    IUser user = getPlugin().getUserManager().getUser(event.getPlayer());
     if(user.isSpectator()) {
       new MessageBuilder("IN_GAME_SPECTATOR_SPECTATOR_WARNING").asKey().player(user.getPlayer()).sendPlayer();
       return;
@@ -107,7 +107,7 @@ public class ZombieFinderKit extends LevelKit implements Listener {
       return;
     }
 
-    Creature creature = arena.getEnemies().get(arena.getEnemies().size() == 1 ? 0 : getPlugin().getRandom().nextInt(arena.getEnemies().size()));
+    Creature creature = arena.getEnemies().get(arena.getEnemies().size() == 1 ? 0 : ((Main) getPlugin()).getRandom().nextInt(arena.getEnemies().size()));
     VersionUtils.teleport(creature, event.getPlayer().getLocation());
     creature.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 20 * 30, 0));
     new MessageBuilder("KIT_CONTENT_ZOMBIE_TELEPORTER_TELEPORT_ZOMBIE").asKey().player(user.getPlayer()).sendPlayer();

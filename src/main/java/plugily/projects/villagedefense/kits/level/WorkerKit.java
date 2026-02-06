@@ -18,6 +18,7 @@
 
 package plugily.projects.villagedefense.kits.level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -27,6 +28,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import plugily.projects.minigamesbox.classic.handlers.language.MessageBuilder;
 import plugily.projects.minigamesbox.classic.kits.basekits.LevelKit;
 import plugily.projects.minigamesbox.classic.utils.helper.ArmorHelper;
@@ -44,13 +46,15 @@ import java.util.List;
 public class WorkerKit extends LevelKit implements Listener {
 
   public WorkerKit() {
+    super(
+        "Worker",
+        new MessageBuilder("KIT_CONTENT_WORKER_NAME").asKey().build(),
+        null,
+        new ItemStack(Utils.getCachedDoor(null))
+    );
     setLevel(getKitsConfig().getInt("Required-Level.Worker"));
-    setName(new MessageBuilder("KIT_CONTENT_WORKER_NAME").asKey().build());
-    setKey("Worker");
-    List<String> description = getPlugin().getLanguageManager().getLanguageListFromKey("KIT_CONTENT_WORKER_DESCRIPTION");
-    setDescription(description);
     getPlugin().getKitRegistry().registerKit(this);
-    getPlugin().getServer().getPluginManager().registerEvents(this, getPlugin());
+    Bukkit.getPluginManager().registerEvents(this, (Plugin) getPlugin());
   }
 
   @Override
@@ -65,17 +69,12 @@ public class WorkerKit extends LevelKit implements Listener {
     player.getInventory().addItem(WeaponHelper.getEnchantedBow(Enchantment.DURABILITY, 10));
     player.getInventory().addItem(new ItemStack(XMaterial.ARROW.parseMaterial(), 64));
     player.getInventory().addItem(new ItemStack(XMaterial.COOKED_BEEF.parseMaterial(), 10));
-    player.getInventory().addItem(new ItemStack(getMaterial(), 2));
-  }
-
-  @Override
-  public Material getMaterial() {
-    return Utils.getCachedDoor(null);
+    player.getInventory().addItem(new ItemStack(getItemStack().getType(), 2));
   }
 
   @Override
   public void reStock(Player player) {
-    player.getInventory().addItem(new ItemStack(getMaterial()));
+    player.getInventory().addItem(new ItemStack(getItemStack().getType()));
   }
 
   @EventHandler(priority = EventPriority.HIGHEST)

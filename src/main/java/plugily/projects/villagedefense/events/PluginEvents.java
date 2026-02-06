@@ -51,9 +51,9 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.inventory.ItemStack;
-import plugily.projects.minigamesbox.classic.arena.ArenaState;
+import plugily.projects.minigamesbox.api.arena.IArenaState;
 import plugily.projects.minigamesbox.classic.handlers.language.MessageBuilder;
-import plugily.projects.minigamesbox.classic.user.User;
+import plugily.projects.minigamesbox.api.user.IUser;
 import plugily.projects.minigamesbox.classic.utils.version.VersionUtils;
 import plugily.projects.minigamesbox.classic.utils.version.events.api.PlugilyPlayerInteractEntityEvent;
 import plugily.projects.minigamesbox.string.StringFormatUtils;
@@ -83,7 +83,7 @@ public class PluginEvents implements Listener {
       return;
     }
 
-    User user = plugin.getUserManager().getUser(player);
+    IUser user = plugin.getUserManager().getUser(player);
     if(user.isSpectator()) {
       event.setAmount(0);
       return;
@@ -174,7 +174,7 @@ public class PluginEvents implements Listener {
   @EventHandler
   public void onItemMove(InventoryClickEvent event) {
     if(event.getWhoClicked() instanceof Player && plugin.getArenaRegistry().isInArena((Player) event.getWhoClicked())) {
-      if(plugin.getArenaRegistry().getArena(((Player) event.getWhoClicked())).getArenaState() != ArenaState.IN_GAME) {
+      if(plugin.getArenaRegistry().getArena(((Player) event.getWhoClicked())).getArenaState() != IArenaState.IN_GAME) {
         if(event.getClickedInventory() == event.getWhoClicked().getInventory()) {
           if(event.getView().getType() == InventoryType.CRAFTING || event.getView().getType() == InventoryType.PLAYER) {
             event.setResult(Event.Result.DENY);

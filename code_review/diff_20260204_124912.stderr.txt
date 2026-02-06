@@ -1,0 +1,2 @@
+warning: in the working copy of 'src/main/java/plugily/projects/villagedefense/Main.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/main/resources/plugin.yml', LF will be replaced by CRLF the next time Git touches it

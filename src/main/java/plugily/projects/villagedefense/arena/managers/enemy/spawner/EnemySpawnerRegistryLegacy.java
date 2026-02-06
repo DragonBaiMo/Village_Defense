@@ -33,7 +33,6 @@ import plugily.projects.villagedefense.creatures.v1_8_R3.spawner.PlayerBusterSpa
 import plugily.projects.villagedefense.creatures.v1_8_R3.spawner.SoftHardZombieSpawner;
 import plugily.projects.villagedefense.creatures.v1_8_R3.spawner.VillagerBusterSpawner;
 import plugily.projects.villagedefense.creatures.v1_8_R3.spawner.VillagerSlayerSpawner;
-import plugily.projects.villagedefense.creatures.v1_9_UP.CustomRideableCreature;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,7 +48,8 @@ import java.util.TreeSet;
  */
 public class EnemySpawnerRegistryLegacy {
   final Set<EnemySpawner> enemySpawnerSet = new TreeSet<>(Collections.reverseOrder());
-  final Set<CustomRideableCreature> rideableCreatures = new HashSet<>();
+  // TODO(1.8.8): rideable creatures are 1.9+ feature; legacy build does not support them.
+  final Set<Object> rideableCreatures = new HashSet<>();
   final Main plugin;
 
   public EnemySpawnerRegistryLegacy(Main plugin) {
@@ -59,13 +59,13 @@ public class EnemySpawnerRegistryLegacy {
   }
 
   public void registerRideableCreatures() {
-    if(ServerVersion.Version.isCurrentEqualOrLower(ServerVersion.Version.v1_8_R3)) {
+    if(ServerVersion.Version.isCurrentEqualOrLower(ServerVersion.Version.v1_8_8)) {
       return;
     }
   }
 
   public void registerCreatures() {
-    if(ServerVersion.Version.isCurrentEqualOrLower(ServerVersion.Version.v1_8_R3)) {
+    if(ServerVersion.Version.isCurrentEqualOrLower(ServerVersion.Version.v1_8_8)) {
       enemySpawnerSet.add(new BabyZombieSpawner());
       enemySpawnerSet.add(new FastZombieSpawner());
       enemySpawnerSet.add(new GolemBusterSpawner());
@@ -115,7 +115,7 @@ public class EnemySpawnerRegistryLegacy {
     return enemySpawnerSet;
   }
 
-  public Set<CustomRideableCreature> getRideableCreatures() {
+  public Set<Object> getRideableCreatures() {
     return rideableCreatures;
   }
 
@@ -125,10 +125,8 @@ public class EnemySpawnerRegistryLegacy {
    * @param type the tyoe
    * @return the rideable creature
    */
-  public Optional<CustomRideableCreature> getRideableCreatureByName(CustomRideableCreature.RideableType type) {
-    return rideableCreatures.stream()
-        .filter(creature -> creature.getRideableType().equals(type))
-        .findFirst();
+  public Optional<Object> getRideableCreatureByName(Object type) {
+    return Optional.empty();
   }
 
   /**

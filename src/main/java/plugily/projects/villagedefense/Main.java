@@ -20,8 +20,6 @@ package plugily.projects.villagedefense;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.java.JavaPluginLoader;
 import org.jetbrains.annotations.TestOnly;
 import plugily.projects.minigamesbox.classic.PluginMain;
 import plugily.projects.minigamesbox.classic.handlers.setup.SetupInventory;
@@ -34,7 +32,6 @@ import plugily.projects.villagedefense.arena.ArenaEvents;
 import plugily.projects.villagedefense.arena.ArenaManager;
 import plugily.projects.villagedefense.arena.ArenaRegistry;
 import plugily.projects.villagedefense.arena.ArenaUtils;
-import plugily.projects.villagedefense.arena.managers.enemy.spawner.EnemySpawnerRegistry;
 import plugily.projects.villagedefense.arena.managers.enemy.spawner.EnemySpawnerRegistryLegacy;
 import plugily.projects.villagedefense.boot.AdditionalValueInitializer;
 import plugily.projects.villagedefense.boot.MessageInitializer;
@@ -42,6 +39,7 @@ import plugily.projects.villagedefense.boot.PlaceholderInitializer;
 import plugily.projects.villagedefense.commands.arguments.ArgumentsRegistry;
 import plugily.projects.villagedefense.creatures.CreatureUtils;
 import plugily.projects.villagedefense.creatures.DoorBreakListener;
+import plugily.projects.villagedefense.creeperattack.CreeperAttackMode;
 import plugily.projects.villagedefense.events.PluginEvents;
 import plugily.projects.villagedefense.handlers.powerup.PowerupHandler;
 import plugily.projects.villagedefense.handlers.setup.SetupCategoryManager;
@@ -73,7 +71,6 @@ import plugily.projects.villagedefense.kits.premium.TeleporterKit;
 import plugily.projects.villagedefense.kits.premium.TornadoKit;
 import plugily.projects.villagedefense.kits.premium.WizardKit;
 
-import java.io.File;
 import java.util.logging.Level;
 
 /**
@@ -87,16 +84,7 @@ public class Main extends PluginMain {
   private ArenaRegistry arenaRegistry;
   private ArenaManager arenaManager;
   private ArgumentsRegistry argumentsRegistry;
-
-  @TestOnly
-  public Main() {
-    super();
-  }
-
-  @TestOnly
-  protected Main(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
-    super(loader, description, dataFolder, file);
-  }
+  private CreeperAttackMode creeperAttackMode;
 
   @Override
   public void onEnable() {
@@ -125,11 +113,8 @@ public class Main extends PluginMain {
     getSignManager().loadSigns();
     getSignManager().updateSigns();
     argumentsRegistry = new ArgumentsRegistry(this);
-    if(ServerVersion.Version.isCurrentEqualOrLower(ServerVersion.Version.v1_8_R3)) {
-      enemySpawnerRegistry = new EnemySpawnerRegistryLegacy(this);
-    } else {
-      enemySpawnerRegistry = new EnemySpawnerRegistry(this);
-    }
+    // TODO(1.8.8): modern spawner registry excluded; always use legacy spawner registry.
+    enemySpawnerRegistry = new EnemySpawnerRegistryLegacy(this);
     if(getConfigPreferences().getOption("UPGRADES")) {
       entityUpgradesConfig = ConfigUtils.getConfig(this, "entity_upgrades");
       Upgrade.init(this);
@@ -140,6 +125,7 @@ public class Main extends PluginMain {
     CreatureUtils.init(this);
     new PowerupHandler(this);
     new PluginEvents(this);
+    creeperAttackMode = new CreeperAttackMode(this);
     addPluginMetrics();
   }
 

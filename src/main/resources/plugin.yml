@@ -2,7 +2,7 @@ name: ${description}
 main: plugily.projects.villagedefense.Main
 authors: [ PlugilyProjects, Tigerpanzer_02, TomTheDeveloper, Plajer, montlikadani ]
 version: ${version}
-softdepend: [ PlaceholderAPI, Parties, Spigot-Party-API-PAF, PartyAndFriends, ViaVersion, ProtocolSupport ]
+softdepend: [ PlaceholderAPI, Parties, Spigot-Party-API-PAF, PartyAndFriends, ViaVersion, ProtocolSupport, Citizens ]
 api-version: 1.13
 
 commands:
@@ -14,6 +14,9 @@ commands:
     description: VillageDefense Admin Commands
     usage: "\u00A76Correct usage: /vda [option]"
     aliases: [ vda, villageadmin ]
+  ca:
+    description: CreeperAttack setup and control
+    usage: "\u00A76Usage: /ca <settrader|setlane|forcestart>"
 
 permissions:
   villagedefense.admin.*:

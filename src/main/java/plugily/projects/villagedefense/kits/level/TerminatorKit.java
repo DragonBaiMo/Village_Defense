@@ -39,10 +39,12 @@ import java.util.List;
 public class TerminatorKit extends LevelKit {
 
   public TerminatorKit() {
-    setName(new MessageBuilder("KIT_CONTENT_TERMINATOR_NAME").asKey().build());
-    setKey("Terminator");
-    List<String> description = getPlugin().getLanguageManager().getLanguageListFromKey("KIT_CONTENT_TERMINATOR_DESCRIPTION");
-    setDescription(description);
+    super(
+        "Terminator",
+        new MessageBuilder("KIT_CONTENT_TERMINATOR_NAME").asKey().build(),
+        null,
+        new ItemStack(Material.ANVIL)
+    );
     setLevel(getKitsConfig().getInt("Required-Level.Terminator"));
     getPlugin().getKitRegistry().registerKit(this);
   }
@@ -60,11 +62,6 @@ public class TerminatorKit extends LevelKit {
     player.getInventory().addItem(new ItemStack(XMaterial.COOKED_PORKCHOP.parseMaterial(), 8));
     player.getInventory().addItem(VersionUtils.getPotion(PotionType.STRENGTH, 2, true));
     player.getInventory().addItem(VersionUtils.getPotion(PotionType.REGEN, 1, true));
-  }
-
-  @Override
-  public Material getMaterial() {
-    return Material.ANVIL;
   }
 
   @Override

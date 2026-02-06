@@ -37,10 +37,12 @@ import java.util.List;
 public class PuncherKit extends LevelKit {
 
   public PuncherKit() {
-    setName(new MessageBuilder("KIT_CONTENT_PUNCHER_NAME").asKey().build());
-    setKey("Puncher");
-    List<String> description = getPlugin().getLanguageManager().getLanguageListFromKey("KIT_CONTENT_PUNCHER_DESCRIPTION");
-    setDescription(description);
+    super(
+        "Puncher",
+        new MessageBuilder("KIT_CONTENT_PUNCHER_NAME").asKey().build(),
+        null,
+        new ItemStack(XMaterial.DIAMOND_SHOVEL.parseMaterial())
+    );
     setLevel(getKitsConfig().getInt("Required-Level.Puncher"));
     getPlugin().getKitRegistry().registerKit(this);
   }
@@ -58,11 +60,6 @@ public class PuncherKit extends LevelKit {
     player.getInventory().addItem(WeaponHelper.getEnchantedBow(Enchantment.DURABILITY, 5));
     player.getInventory().addItem(new ItemStack(Material.ARROW, 25));
     player.getInventory().addItem(new ItemStack(XMaterial.COOKED_PORKCHOP.parseMaterial(), 8));
-  }
-
-  @Override
-  public Material getMaterial() {
-    return XMaterial.DIAMOND_SHOVEL.parseMaterial();
   }
 
   @Override

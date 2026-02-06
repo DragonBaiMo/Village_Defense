@@ -28,13 +28,17 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import plugily.projects.minigamesbox.classic.handlers.language.MessageBuilder;
 import plugily.projects.minigamesbox.classic.kits.basekits.PremiumKit;
-import plugily.projects.minigamesbox.classic.user.User;
+import plugily.projects.minigamesbox.api.user.IUser;
 import plugily.projects.minigamesbox.classic.utils.helper.ArmorHelper;
 import plugily.projects.minigamesbox.classic.utils.helper.WeaponHelper;
+import org.bukkit.plugin.Plugin;
+import plugily.projects.minigamesbox.api.user.IUser;
 import plugily.projects.minigamesbox.classic.utils.version.VersionUtils;
 import plugily.projects.minigamesbox.classic.utils.version.events.api.PlugilyPlayerInteractEvent;
+import plugily.projects.villagedefense.Main;
 
 import java.util.List;
 
@@ -45,37 +49,34 @@ import java.util.List;
 public class ShotBowKit extends PremiumKit implements Listener {
 
   public ShotBowKit() {
-    setName(new MessageBuilder("KIT_CONTENT_SHOT_BOW_NAME").asKey().build());
-    setKey("ShotBow");
-    List<String> description = getPlugin().getLanguageManager().getLanguageListFromKey("KIT_CONTENT_SHOT_BOW_DESCRIPTION");
-    setDescription(description);
-    getPlugin().getServer().getPluginManager().registerEvents(this, getPlugin());
+    super(
+        "ShotBow",
+        new MessageBuilder("KIT_CONTENT_SHOT_BOW_NAME").asKey().build(),
+        null,
+        new ItemStack(Material.ARROW)
+    );
     getPlugin().getKitRegistry().registerKit(this);
+    Bukkit.getPluginManager().registerEvents(this, (Plugin) getPlugin());
   }
 
   @Override
   public boolean isUnlockedByPlayer(Player player) {
-    return getPlugin().getPermissionsManager().hasPermissionString("KIT_PREMIUM_UNLOCK", player) || player.hasPermission("villagedefense.kit.shotbow");
+    return ((Main) getPlugin()).getPermissionsManager().hasPermissionString("KIT_PREMIUM_UNLOCK", player) || player.hasPermission("villagedefense.kit.shotbow");
   }
 
   @Override
   public void giveKitItems(Player player) {
     player.getInventory().addItem(WeaponHelper.getEnchantedBow(new Enchantment[]{Enchantment.DURABILITY, Enchantment.ARROW_KNOCKBACK}, new int[]{10, 1}));
-    player.getInventory().addItem(new ItemStack(getMaterial(), 64));
-    player.getInventory().addItem(new ItemStack(getMaterial(), 64));
+    player.getInventory().addItem(new ItemStack(getItemStack().getType(), 64));
+    player.getInventory().addItem(new ItemStack(getItemStack().getType(), 64));
     ArmorHelper.setColouredArmor(Color.YELLOW, player);
     player.getInventory().addItem(new ItemStack(Material.COOKED_BEEF, 8));
     player.getInventory().addItem(new ItemStack(Material.SADDLE));
   }
 
   @Override
-  public Material getMaterial() {
-    return Material.ARROW;
-  }
-
-  @Override
   public void reStock(Player player) {
-    player.getInventory().addItem(new ItemStack(getMaterial(), 64));
+    player.getInventory().addItem(new ItemStack(getItemStack().getType(), 64));
   }
 
   @EventHandler
@@ -88,10 +89,10 @@ public class ShotBowKit extends PremiumKit implements Listener {
     if(stack == null || stack.getType() != Material.BOW)
       return;
 
-    if(!e.getPlayer().getInventory().contains(getMaterial()))
+    if(!e.getPlayer().getInventory().contains(getItemStack().getType()))
       return;
 
-    User user = getPlugin().getUserManager().getUser(e.getPlayer());
+    IUser user = getPlugin().getUserManager().getUser(e.getPlayer());
     if(user.isSpectator() || !(user.getKit() instanceof ShotBowKit)) {
       return;
     }
@@ -99,7 +100,7 @@ public class ShotBowKit extends PremiumKit implements Listener {
       return;
     }
     for(int i = 0; i < 4; i++) {
-      Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {
+      Bukkit.getScheduler().runTaskLater((Plugin) getPlugin(), () -> {
         Arrow pr = e.getPlayer().launchProjectile(Arrow.class);
         pr.setVelocity(e.getPlayer().getLocation().getDirection().multiply(3));
         pr.setBounce(false);
@@ -108,8 +109,8 @@ public class ShotBowKit extends PremiumKit implements Listener {
 
         org.bukkit.inventory.PlayerInventory inv = e.getPlayer().getInventory();
 
-        if(inv.contains(getMaterial())) {
-          inv.removeItem(new ItemStack(getMaterial(), 1));
+        if(inv.contains(getItemStack().getType())) {
+          inv.removeItem(new ItemStack(getItemStack().getType(), 1));
         }
       }, 2L * (2 * i));
     }

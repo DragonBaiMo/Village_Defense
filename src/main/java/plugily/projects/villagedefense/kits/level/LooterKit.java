@@ -18,6 +18,7 @@
 
 package plugily.projects.villagedefense.kits.level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -25,6 +26,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import plugily.projects.minigamesbox.classic.handlers.language.MessageBuilder;
 import plugily.projects.minigamesbox.classic.kits.basekits.LevelKit;
 import plugily.projects.minigamesbox.classic.utils.helper.ArmorHelper;
@@ -40,13 +42,15 @@ import java.util.List;
 public class LooterKit extends LevelKit implements Listener {
 
   public LooterKit() {
-    setName(new MessageBuilder("KIT_CONTENT_LOOTER_NAME").asKey().build());
-    setKey("Looter");
-    List<String> description = getPlugin().getLanguageManager().getLanguageListFromKey("KIT_CONTENT_LOOTER_DESCRIPTION");
-    setDescription(description);
+    super(
+        "Looter",
+        new MessageBuilder("KIT_CONTENT_LOOTER_NAME").asKey().build(),
+        null,
+        new ItemStack(Material.ROTTEN_FLESH)
+    );
     setLevel(getKitsConfig().getInt("Required-Level.Looter"));
-    getPlugin().getServer().getPluginManager().registerEvents(this, getPlugin());
     getPlugin().getKitRegistry().registerKit(this);
+    Bukkit.getPluginManager().registerEvents(this, (Plugin) getPlugin());
   }
 
   @Override
@@ -59,11 +63,6 @@ public class LooterKit extends LevelKit implements Listener {
     player.getInventory().addItem(WeaponHelper.getUnBreakingSword(WeaponHelper.ResourceType.STONE, 10));
     ArmorHelper.setColouredArmor(Color.ORANGE, player);
     player.getInventory().addItem(new ItemStack(XMaterial.COOKED_PORKCHOP.parseMaterial(), 8));
-  }
-
-  @Override
-  public Material getMaterial() {
-    return Material.ROTTEN_FLESH;
   }
 
   @Override
@@ -82,7 +81,7 @@ public class LooterKit extends LevelKit implements Listener {
       return;
     }
     if(getPlugin().getUserManager().getUser(player).getKit() instanceof LooterKit) {
-      player.getInventory().addItem(new ItemStack(getMaterial(), 1));
+      player.getInventory().addItem(new ItemStack(getItemStack().getType(), 1));
     }
   }
 }

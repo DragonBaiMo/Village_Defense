@@ -18,15 +18,17 @@
 
 package plugily.projects.villagedefense.kits.premium;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import plugily.projects.minigamesbox.classic.handlers.language.MessageBuilder;
 import plugily.projects.minigamesbox.classic.kits.basekits.PremiumKit;
-import plugily.projects.minigamesbox.classic.user.User;
+import plugily.projects.minigamesbox.api.user.IUser;
 import plugily.projects.minigamesbox.classic.utils.helper.ArmorHelper;
 import plugily.projects.minigamesbox.classic.utils.helper.ItemBuilder;
 import plugily.projects.minigamesbox.classic.utils.helper.ItemUtils;
@@ -34,6 +36,8 @@ import plugily.projects.minigamesbox.classic.utils.helper.WeaponHelper;
 import plugily.projects.minigamesbox.classic.utils.misc.complement.ComplementAccessor;
 import plugily.projects.minigamesbox.classic.utils.version.VersionUtils;
 import plugily.projects.minigamesbox.classic.utils.version.events.api.PlugilyPlayerInteractEvent;
+import plugily.projects.minigamesbox.api.user.IUser;
+import plugily.projects.villagedefense.Main;
 import plugily.projects.villagedefense.arena.Arena;
 import plugily.projects.villagedefense.arena.ArenaUtils;
 
@@ -45,17 +49,19 @@ import java.util.List;
 public class CleanerKit extends PremiumKit implements Listener {
 
   public CleanerKit() {
-    setName(new MessageBuilder("KIT_CONTENT_CLEANER_NAME").asKey().build());
-    setKey("Cleaner");
-    List<String> description = getPlugin().getLanguageManager().getLanguageListFromKey("KIT_CONTENT_CLEANER_DESCRIPTION");
-    setDescription(description);
-    getPlugin().getServer().getPluginManager().registerEvents(this, getPlugin());
+    super(
+        "Cleaner",
+        new MessageBuilder("KIT_CONTENT_CLEANER_NAME").asKey().build(),
+        null,
+        new ItemStack(Material.BLAZE_POWDER)
+    );
     getPlugin().getKitRegistry().registerKit(this);
+    Bukkit.getPluginManager().registerEvents(this, (Plugin) getPlugin());
   }
 
   @Override
   public boolean isUnlockedByPlayer(Player player) {
-    return getPlugin().getPermissionsManager().hasPermissionString("KIT_PREMIUM_UNLOCK", player) || player.hasPermission("villagedefense.kit.cleaner");
+    return ((Main) getPlugin()).getPermissionsManager().hasPermissionString("KIT_PREMIUM_UNLOCK", player) || player.hasPermission("villagedefense.kit.cleaner");
   }
 
   @Override
@@ -68,11 +74,6 @@ public class CleanerKit extends PremiumKit implements Listener {
         .build());
     player.getInventory().addItem(new ItemStack(Material.COOKED_BEEF, 10));
     player.getInventory().addItem(new ItemStack(Material.SADDLE));
-  }
-
-  @Override
-  public Material getMaterial() {
-    return Material.BLAZE_POWDER;
   }
 
   @Override
@@ -91,7 +92,7 @@ public class CleanerKit extends PremiumKit implements Listener {
         .contains(new MessageBuilder("KIT_CONTENT_CLEANER_GAME_ITEM_NAME").asKey().build())) {
       return;
     }
-    User user = getPlugin().getUserManager().getUser(event.getPlayer());
+    IUser user = getPlugin().getUserManager().getUser(event.getPlayer());
     if(!(user.getKit() instanceof CleanerKit)) {
       return;
     }
