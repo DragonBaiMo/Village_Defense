@@ -4,3 +4,20 @@
 /target/
 /mvn/
 /minecraft/
+
+# Gradle local/cache directories
+/.gradle/
+
+# Build outputs
+/build/
+
+# Compiled binaries and temporary artifacts
+*.class
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/
